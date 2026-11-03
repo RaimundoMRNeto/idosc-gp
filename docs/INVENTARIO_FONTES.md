@@ -1,6 +1,6 @@
 # Inventário inicial de fontes públicas
 
-**Versão documental:** 0.1.0 — consulta documental em 02/11/2026.  
+**Versão documental:** 0.2.0 — atualização arquitetural em novembro de 2026.  
 **Estado:** fontes identificadas e documentação consultada; ingestão nacional e avaliação empírica de cobertura ainda não executadas neste repositório.
 
 ## 1. Como interpretar este inventário
@@ -111,4 +111,27 @@ O repositório público deve utilizar apenas fontes e usos compatíveis com sua 
 5. Auditar datas, desfechos, granularidade e disponibilidade histórica.
 6. Emitir um relatório que selecione campos elegíveis para cada produto.
 
-Relacionados: [arquitetura](ARQUITETURA_DADOS.md), [dicionário conceitual](DICIONARIO_CONCEITUAL.md), [referências](REFERENCIAS.md).
+
+## 7. Papel das fontes e dependência da extração dirigida
+
+A arquitetura adotada separa responsabilidades de fontes **sem declarar cobertura empírica já validada**:
+
+| Família | Papel de referência para o projeto | Regra de governança |
+|---|---|---|
+| F03 — Mapa das OSCs/Ipea | Seleção de OSCs candidatas e classificação/enriquecimento derivados | Preservar o snapshot e os critérios do Mapa; não confundir presença no Mapa, situação cadastral e existência de parceria |
+| F04 — CNPJ/RFB | Atributos cadastrais da edição oficial correspondente | Extração dirigida aos CNPJs do universo; situação atual não equivale a história retroativa |
+| F01/F02 — Portal e Transferegov | Instrumentos, participantes, modalidades, datas e valores conforme o sistema/canal | Preservar IDs originais, regime e período; evitar dupla contagem entre canais sobrepostos |
+
+Como referências iniciais do Mapa foram identificados o [CSV divulgado em 06/08/2026](https://mapaosc.ipea.gov.br/download/20260806_MOSC_baseDivulgacao.csv), o [dicionário XLSX](https://mapaosc.ipea.gov.br/arquivos/subitems/4038-dicionario-de-dados-mapa-oscs.xlsx) e o [repositório de importação](https://github.com/Plataformas-Cidadania/mapa-osc-data-import). **O cabeçalho real do arquivo e os tipos deverão ser conferidos contra o dicionário antes de aprovar o contrato de ingestão.** O Mapa pode incorporar informações de outros sistemas federais, de modo que concordância entre essas fontes não equivale automaticamente a validação independente.
+
+### 7.1 Universo candidato e acesso à RFB
+
+1. Reunir CNPJs/raízes do Mapa, de participantes de parcerias federais e de outros critérios legais **aprovados**.
+2. Registrar origem, versão e motivo de inclusão de cada candidato; preservar identificadores completos como texto.
+3. Verificar os arquivos/canais oficiais da RFB, termos e custo físico de leitura. A seleção dirigida pode requerer varredura de partes dos arquivos oficiais; **não pressupor endpoint por CNPJ**.
+4. Reter apenas as informações cadastrais necessárias, com edição e hash, e relatar candidatos encontrados, não encontrados e ambíguos.
+5. Manter separados o fato cadastral observado, o critério de OSC do Ipea e a existência de instrumento. A ausência em qualquer fonte não é prova de irregularidade.
+
+A E4 somente deverá ocorrer após a formação auditável do universo em E2–E3. Captura integral e persistente da RFB, ingestão de dados pessoais de sócios e conexão com fontes restritas **não** são requisitos aprovados. A cobertura nacional será medida, não presumida.
+
+Relacionados: [decisões D11–D13](REGISTRO_DE_DECISOES.md), [roadmap E0–E8](ROADMAP.md), [governança](GOVERNANCA_DADOS.md).

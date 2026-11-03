@@ -1,5 +1,24 @@
 # Histórico de alterações
 
+## 0.2.0 — 2026-11-02
+
+Atualização **exclusivamente documental** da arquitetura e do plano de engenharia de dados (E0), sem implantação de infraestrutura ou ingestão.
+
+### Decidido e documentado
+
+- PostgreSQL como referência relacional Silver, Parquet como persistência Gold e DuckDB para análises.
+- Arquivos originais versionados por snapshot na camada Bronze, fora do Git.
+- Receita Federal por extração dirigida ao universo documentado de CNPJs.
+- Execuções iniciais sob demanda, com `run_id`, validações e promoção revisada.
+- Etapas E0–E8, contratos de proveniência, regras temporais, separação de responsabilidades das fontes e dependências de implementação.
+- Registro das decisões D11–D13; P06 revisto e periodicidade mensal P02 mantida como hipótese.
+
+### Sem alteração de escopo operacional
+
+- Nenhum banco, serviço, script de coleta, pipeline, indicador ou modelo foi implementado.
+- Nenhuma licença, automação, banco em nuvem ou regra de proteção da `main` foi aprovada por esta edição.
+- Issues I01–I09 permanecem como backlog, sem encerramento automático.
+
 ## 0.1.0 — 2026-11-02
 
 Edição documental inicial. A versão identifica a documentação, não um software de cálculo pronto.
