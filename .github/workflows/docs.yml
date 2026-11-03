@@ -1,0 +1,25 @@
+name: CI documental
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validar_documentacao:
+    name: Markdown, links internos e higiene do repositório
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obter repositório
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Validar documentação
+        run: python3 scripts/validate_docs.py
