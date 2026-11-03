@@ -85,7 +85,7 @@ Fontes complementares incluem emendas, execução financeira, CEPIM, CEIS, CNEP,
 | [Indicadores candidatos](docs/INDICADORES_CANDIDATOS.md) | Conceitos, elegibilidade e riscos de interpretação |
 | [Inventário de fontes](docs/INVENTARIO_FONTES.md) | Fontes, canais, possibilidades e pendências de verificação |
 | [Plano analítico](docs/PLANO_ANALITICO.md) | Experimentos estatísticos, ML e possível deep learning |
-| [Arquitetura de dados](docs/ARQUITETURA_DADOS.md) | Camadas, tabelas, rastreabilidade e tecnologias candidatas |
+| [Arquitetura de dados](docs/ARQUITETURA_DADOS.md) | Camadas Bronze/Silver/Gold, modelo relacional e tecnologias aprovadas (ainda não implementadas) |
 | [Dicionário conceitual](docs/DICIONARIO_CONCEITUAL.md) | Entidades, campos propostos e regras de identidade |
 | [Governança dos dados](docs/GOVERNANCA_DADOS.md) | Qualidade, proteção, publicação e reprodutibilidade |
 | [Roadmap](docs/ROADMAP.md) | Fases, entregas e critérios de conclusão |
@@ -105,7 +105,7 @@ git clone https://github.com/RaimundoMRNeto/idosc-gp.git
 cd idosc-gp
 ```
 
-Leia o plano de pesquisa, as decisões e a fase F1 do roadmap. A próxima entrega técnica será a matriz nacional de cobertura e temporalidade. Ainda não há comando de ingestão, instalação de dependências ou treinamento implementado.
+Leia o plano de pesquisa, as decisões e a fase F1 do roadmap. A engenharia de dados foi organizada nas etapas E0–E8: a E0 é documental; a E1 (ambiente mínimo) dependerá de autorização específica. O objetivo técnico subsequente é produzir uma matriz nacional reproduzível de cobertura e temporalidade. Ainda não há comando de ingestão, instalação de dependências ou treinamento implementado.
 
 Os documentos Markdown são a fonte de verdade inicial do planejamento. A estrutura de código será criada à medida que os contratos de dados forem definidos.
 

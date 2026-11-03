@@ -1,7 +1,7 @@
 # Arquitetura de dados proposta
 
-**Versão documental:** 0.1.0 — 02/11/2026.  
-**Estado:** desenho de referência; nenhuma infraestrutura ou rotina de ingestão foi implementada.
+**Versão documental:** 0.2.0 — novembro de 2026.  
+**Estado:** tecnologias e estratégia de execução aprovadas como decisões de arquitetura; nenhuma infraestrutura ou rotina de ingestão foi implementada.
 
 ## 1. Princípio
 
@@ -18,7 +18,7 @@ O acervo histórico completo não se confunde com a tabela usada em cada cálcul
 | Analítica | Observações elegíveis, indicadores por período e exemplos preditivos | Registrar cortes temporais, denominadores, versão e finalidade |
 | Divulgação | Documentação, resultados agregados e evidências publicáveis | Revisar risco de identificação, interpretação e condições de redistribuição |
 
-As expressões bronze, silver e gold poderão ser usadas como equivalentes das três primeiras camadas, sem exigir uma plataforma específica.
+As denominações **Bronze, Silver e Gold** são adotadas para as três primeiras camadas. A arquitetura medalhão é um padrão de organização e refinamento; não pressupõe contratação de uma plataforma específica.
 
 ## 3. Entidades conceituais
 
@@ -63,18 +63,22 @@ Quando uma data não estiver disponível, registrar ausência e consequência an
 
 Estados históricos deverão ser preservados por snapshots ou eventos. Reprocessar uma coleta não pode substituir silenciosamente a evidência usada em uma edição anterior do índice.
 
-## 6. Tecnologias candidatas
+## 6. Tecnologias e armazenamento aprovados
 
-Uma implementação inicial enxuta poderá utilizar:
+As três decisões técnicas de arquitetura estão registradas como D11–D13 no [registro de decisões](REGISTRO_DE_DECISOES.md).
 
-- Python para obtenção, validação e coordenação.
-- SQL para transformação e conciliação.
-- Parquet para tabelas analíticas.
-- DuckDB para processamento local e consultas.
-- Git para código, documentação, configurações e testes.
-- Notebooks ou Quarto para análises e relatório, se adequados à entrega acadêmica.
+| Componente | Persistência e função | Limite |
+|---|---|---|
+| Bronze | Arquivos originais por lote e snapshot, armazenados em área persistente **fora do Git** | Guardar bytes recebidos, referência, hash SHA-256 e condições de uso; nunca substituir uma edição já usada |
+| Staging | Área transitória de preparo por execução | Conversões, validações e rejeições não afetam a versão Silver publicada |
+| **PostgreSQL — Silver** | Banco relacional específico do IDOSC-GP para entidade, estabelecimento, participante, instrumento, eventos, snapshots e metadados de proveniência | Integridade referencial, histórico de lotes, conflitos e transações de promoção |
+| **Parquet — Gold** | Conjuntos analíticos versionados, com cortes temporais, denominadores e método | Deriváveis da Silver e das versões de código; não se confundir com dados brutos |
+| **DuckDB — consulta** | Motor embutido para processamento de Parquet e consultas controladas ao PostgreSQL | Não será fonte mestre das entidades, nem substituto da rastreabilidade SQL |
+| Python e SQL | Obtenção, validação, transformação e testes | Dependências e versões serão fixadas somente na etapa técnica aprovada |
 
-Versões, dependências e ambiente serão fixados na primeira implementação. Não há instalação ou configuração pronta nesta edição. Orquestração distribuída, DataHub, serviços em nuvem e integração ao SiAGIR são opções futuras, não requisitos assumidos.
+A arquitetura não exige inicialmente Spark, Databricks, Delta Lake, Iceberg, Airflow, dbt, Superset, DataHub, PostGIS ou serviços de nuvem. Sua eventual inclusão requer justificativa, diagnóstico de custo e aprovação.
+
+**Isolamento:** o PostgreSQL, os arquivos e os backups deverão pertencer ao IDOSC-GP, sem compartilhar bases internas do SiAGIR, GCRS ou dados autenticados de outros projetos. Localização física, capacidade do SSD, versões e política de retenção permanecem pendentes para a E1.
 
 ## 7. Organização futura do código
 
@@ -107,4 +111,28 @@ Hashes demonstram identidade do arquivo, não sua exatidão substantiva.
 - Ausência de informação posterior ao corte nas características.
 - Reexecução de um cálculo com o mesmo conjunto de entradas.
 
-Relacionados: [governança](GOVERNANCA_DADOS.md), [roadmap](ROADMAP.md), [inventário](INVENTARIO_FONTES.md).
+
+## 10. Desenho relacional inicial e papel das fontes
+
+O modelo físico será validado e criado na E1/E5, não nesta atualização documental. As tabelas conceituais a verificar são:
+
+| Domínio | Entidades candidatas | Condição |
+|---|---|---|
+| Catálogo e execução | `fonte`, `versao_fonte`, `arquivo_original`, `execucao`, `validacao` | Origem, parâmetros não secretos, hash, rodada, resultado e aprovação |
+| Identidade | `osc_entidade`, `estabelecimento`, `vinculo_osc_estabelecimento`, `classificacao_evidencia` | CNPJ completo/raiz como texto, `osc_id` distinto e evidência temporal |
+| Parcerias | `instrumento`, `identificador_instrumento_fonte`, `participacao_instrumento` | Chaves nativas preservadas; uma parceria em dois canais não gera automaticamente dois instrumentos |
+| Eventos e snapshots | `evento_instrumento`, `snapshot_instrumento`, `snapshot_cadastral` | Data do fato diferente de publicação, coleta e corte; sem estado histórico inventado |
+| Divergências | `conciliacao_candidata`, `conflito`, `exclusao_justificada` | Correspondências aproximadas sempre revisáveis; motivos de exclusão persistentes |
+| Metadados analíticos | `produto_analitico`, `versao_indicador` | Identificar a edição Gold e sua população, janela, versão e critérios |
+
+**Fontes por atributo:** Receita Federal é referência dos dados cadastrais que publica; Mapa das OSCs/Ipea fornece classificação e enriquecimentos derivados; Transferegov e Portal da Transparência fornecem evidências de instrumentos conforme cobertura. Não existe fonte vencedora universal. Presença no Mapa, classificação como OSC, situação cadastral e participação em parceria são conceitos diferentes.
+
+**Receita Federal dirigida (D12):** primeiro formar o conjunto documentado de CNPJs/raízes de interesse a partir do Mapa e de participantes de parcerias; depois avaliar a leitura/varredura dos arquivos oficiais e reter os registros pertinentes. “Direcionada” não pressupõe um endpoint de consulta em lote por CNPJ e não autoriza contornar restrições. A leitura de tabelas envolvendo pessoas físicas exige avaliação específica de necessidade e fundamento.
+
+## 11. Contrato da execução sob demanda (D13)
+
+Cada execução terá `run_id`, fonte/edição, hashes, parâmetros não secretos, referência temporal, commit do código, versões de ferramentas, contagens de entrada/saída, testes, conflitos e parecer de revisão. Estados de referência: `iniciada` → `extraida` → `validada` → `em_revisao` → `promovida`; falhas/rejeições não modificam o conjunto vigente.
+
+A carga Silver deverá ser transacional e idempotente; a publicação Gold indicará versão e origem, de modo que possa ser refeita e revertida sem perda de evidências. Até nova decisão, **não haverá agendamento automático**. A operação, a recuperação e os limites de qualidade serão testados apenas após autorização da E1.
+
+Relacionados: [governança](GOVERNANCA_DADOS.md), [roteiro E0–E8](ROADMAP.md), [inventário de fontes](INVENTARIO_FONTES.md).

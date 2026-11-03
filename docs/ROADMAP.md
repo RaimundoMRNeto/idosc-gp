@@ -1,6 +1,6 @@
 # Roteiro de desenvolvimento e critérios de aceite
 
-**Versão documental:** 0.1.0 — 02/11/2026.  
+**Versão documental:** 0.2.0 — novembro de 2026.  
 **Planejamento por entregas:** não há prazo acadêmico confirmado neste repositório.
 
 ## 1. Situação inicial
@@ -103,3 +103,25 @@ Esses itens são um backlog documental; não correspondem a issues já abertas a
 ## 8. Regra de continuidade
 
 Antes de iniciar uma fase, revisar o [diário](DIARIO_DE_EXECUCAO.md), o [registro de decisões](REGISTRO_DE_DECISOES.md) e as limitações da etapa anterior. Uma mudança de objetivo, população ou desfecho precisa de decisão explícita, não de adaptação silenciosa durante o experimento.
+
+## 9. Etapas de engenharia de dados E0–E8
+
+As etapas **E0–E8** detalham o caminho operacional e não substituem as fases científicas F0–F6. Uma etapa não passa automaticamente à seguinte. As diretrizes D11–D13 estão decididas; as implementações correspondentes permanecem sujeitas aos seus critérios de aceite.
+
+| Etapa | Produto principal | Correspondência | Porta de aceite |
+|---|---|---|---|
+| **E0** — diagnóstico e formalização | Decisões, arquitetura e contratos documentais | F0/F1; T01–T03 | Revisão dos documentos e aprovação da publicação; nenhuma infraestrutura |
+| **E1** — ambiente mínimo | PostgreSQL isolado, Python/SQL, Parquet/DuckDB, manifesto e backup testado com dados sintéticos | F1/F2; T03; [I04](https://github.com/RaimundoMRNeto/idosc-gp/issues/4) | Reprodutibilidade, isolamento e restauração |
+| **E2** — MapaOSC Bronze | Snapshot preservado, leitura, contrato e perfil de qualidade | F1; [I07](https://github.com/RaimundoMRNeto/idosc-gp/issues/7) | Contagens e divergências reproduzíveis |
+| **E3** — parcerias e CNPJs candidatos | Auditoria de canais, beneficiários, universo dirigido e sobreposições | F1; [I05](https://github.com/RaimundoMRNeto/idosc-gp/issues/5), [I06](https://github.com/RaimundoMRNeto/idosc-gp/issues/6) | Chaves, cobertura e origem dos candidatos explícitas |
+| **E4** — RFB dirigida | Filtragem dos registros oficiais de interesse, conciliação cadastral | F1/F2; [I01](https://github.com/RaimundoMRNeto/idosc-gp/issues/1), [I07](https://github.com/RaimundoMRNeto/idosc-gp/issues/7) | Solicitados, encontrados, ausentes, volume e divergências rastreados |
+| **E5** — Silver relacional | Entidades, vínculos, instrumentos, eventos, snapshots e conflitos | F2; [I08](https://github.com/RaimundoMRNeto/idosc-gp/issues/8), [I09](https://github.com/RaimundoMRNeto/idosc-gp/issues/9) | Integridade PK/FK, deduplicação verificada e cobertura histórica |
+| **E6** — Gold e perfil | Parquet versionado, indicadores candidatos, denominadores e relatórios DuckDB | F3; T05–T06 | Paridade Silver/Gold, qualidade temporal e fichas de indicadores |
+| **E7** — análise científica condicional | Viabilidade do índice; eventual protocolo preditivo com corte temporal | F4/F5; T06/T08 | Validação substantiva; modelos só se houver rótulos e dados adequados |
+| **E8** — entrega | Reprodução aprovada, relatório e material publicável | F6; T07/T09 | Fontes, métodos, resultados e limites auditáveis |
+
+**Ordem necessária:** a extração RFB da E4 só é dirigida depois que E2 e E3 fornecerem a lista de CNPJs. E5 depende da auditoria dessas fontes; E6 não antecipa uma nota agregada; E7 pode concluir pela inviabilidade de previsão sem invalidar o projeto. Nenhuma etapa exige nuvem ou orquestrador distribuído no piloto.
+
+**Fluxo de trabalho por etapa:** diagnóstico → proposta específica → autorização → execução → relatório de testes e limitações → avaliação humana → autorização de commit/PR, quando pertinente → deliberação da próxima etapa. A aprovação da E0 é **documental**. A E1 continua **não iniciada e não autorizada**.
+
+Relacionados: [decisões](REGISTRO_DE_DECISOES.md), [arquitetura](ARQUITETURA_DADOS.md), [governança](GOVERNANCA_DADOS.md).

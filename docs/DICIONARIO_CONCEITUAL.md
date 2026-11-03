@@ -1,6 +1,6 @@
 # Dicionário conceitual inicial
 
-**Versão documental:** 0.1.0 — 02/11/2026.  
+**Versão documental:** 0.2.0 — novembro de 2026.  
 **Estado:** convenções propostas. Os nomes abaixo não são afirmações sobre colunas existentes nas fontes.
 
 ## 1. Identificação e proveniência
@@ -105,3 +105,24 @@ O armazenamento físico será definido depois; o significado não pode ser perdi
 A primeira implementação acrescentará um mapa contendo: fonte, tabela, campo nativo, definição oficial, transformação, campo conceitual, teste, período de validade e limitação.
 
 Este documento não deve ser usado como contrato de API antes dessa etapa.
+
+## 8. Metadados e distinções adicionais da arquitetura híbrida
+
+| Campo conceitual proposto | Significado e restrição |
+|---|---|
+| `versao_fonte` | Edição ou referência específica do conjunto que deu origem ao registro |
+| `referencia_fonte` | Data ou período descrito pela própria fonte, distinta da data de coleta |
+| `hash_sha256` | Integridade do arquivo original efetivamente processado |
+| `run_id` | Identificador estável da execução; relaciona entrada, testes e promoção |
+| `decisao_promocao` | Estado, responsável e referência da revisão humana da rodada |
+| `presenca_mapa_osc` | Presença/classificação observada no Mapa, segundo edição e regra específica; não é situação cadastral |
+| `situacao_cadastral_rfb` | Estado da inscrição informado pela edição RFB; não prova condição histórica |
+| `motivo_cnpj_candidato` | Evidência que levou o CNPJ à extração dirigida, como Mapa ou participante de parceria |
+| `data_fato` | Data da ocorrência administrativa documentada |
+| `versao_gold` | Identificador dos arquivos Parquet gerados de uma Silver e metodologia específicas |
+
+Os nomes acima são **propostos**, não são colunas constatadas nas fontes nem tabelas efetivamente criadas. `run_id` poderá ser o identificador físico escolhido para `execucao_id`, após decisão do contrato. A `data_disponibilizacao` deve permanecer ausente quando não comprovável; não será preenchida com `coletado_em`.
+
+Modelo relacional físico candidato, sujeito a testes em E1/E5: catálogos de fonte/execução; OSC e estabelecimento com vínculo documentado; instrumento e participantes com identificadores por sistema; eventos e snapshots; conflitos e produtos analíticos. **PostgreSQL** será a referência harmonizada; **Parquet** armazenará os produtos analíticos; **DuckDB** os consultará. A existência de uma raiz CNPJ comum não basta, por si, para declarar OSCs idênticas.
+
+Relacionados: [arquitetura](ARQUITETURA_DADOS.md), [decisões](REGISTRO_DE_DECISOES.md), [inventário](INVENTARIO_FONTES.md).

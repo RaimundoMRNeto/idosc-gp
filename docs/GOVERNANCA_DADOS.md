@@ -1,6 +1,6 @@
 # Governança, qualidade e uso responsável
 
-**Versão documental:** 0.1.0 — 02/11/2026.  
+**Versão documental:** 0.2.0 — novembro de 2026.  
 **Estado:** regras de trabalho para o desenvolvimento do projeto.
 
 ## 1. Limites de uso
@@ -106,4 +106,30 @@ Não enviar informações restritas ou credenciais a ferramentas sem autorizaç�
 | Divulgar resultados individuais | Revisão específica de risco, contextualização e correção |
 | Reutilizar em decisão administrativa | Avaliação própria, externa ao escopo acadêmico inicial |
 
-Relacionados: [contribuição](../CONTRIBUTING.md), [decisões](REGISTRO_DE_DECISOES.md), [plano analítico](PLANO_ANALITICO.md).
+
+## 10. Governança operacional da arquitetura híbrida
+
+**Decisões adotadas, ainda não implementadas:** PostgreSQL + Parquet + DuckDB (D11), extração RFB direcionada (D12) e execuções iniciais sob demanda (D13). O GitHub público continua restrito aos artefatos revisados; Bronze, banco relacional, Parquet de uso interno e cópias de segurança não são publicações automáticas.
+
+### 10.1 Contrato mínimo por fonte e por execução
+
+Registrar por `run_id`: sistema de origem, canal e URL canônica, edição/referência do conjunto, coleta, termos, formato e esquema observado, hash SHA-256, parâmetros não secretos, contagens de entrada/saída, código e versões, testes e decisão de promoção. Hash atesta identidade do arquivo, **não** validade substantiva. A edição do dicionário precisa corresponder ao arquivo efetivamente lido.
+
+### 10.2 Portas de promoção e reversão
+
+1. Preservar arquivo original e manifesto em Bronze sem sobrescrever snapshots anteriores.
+2. Carregar e verificar o lote isoladamente em staging.
+3. Exigir integridade do arquivo, aderência ao contrato, validade de chaves e rastreabilidade; falhas críticas bloqueiam publicação.
+4. Registrar diferenças de cobertura, campos ausentes e conflitos de fonte, com tratamento e incerteza explícitos.
+5. Obter revisão humana antes de promover Silver ou publicar uma edição Gold.
+6. Manter a versão anterior disponível e demonstrar idempotência, backup e restauração na implementação.
+
+Indicadores graduais de completude e compatibilidade terão linha de base empírica antes de definir tolerâncias; não há percentuais arbitrários de aprovação nesta edição.
+
+### 10.3 Temporalidade, minimização e autorização
+
+A data do evento, a do registro/disponibilização, a da coleta e a de corte são categorias distintas. Uma situação cadastral observada hoje não será atribuída a datas anteriores sem evidência. A seleção dirigida da RFB registrará origem dos CNPJs candidatos e os não encontrados; dados pessoais de sócios não serão coletados por padrão.
+
+Cada etapa da engenharia de dados terá avaliação e aprovação próprias antes de mudanças de ambiente, ingestão, commits e publicação. A aprovação da E0 **não** autoriza E1, periodicidade mensal, uso de serviços em nuvem, divulgação de índices individuais nem treinamento de modelo. A `main` permanece sem alteração de proteção por esta diretriz.
+
+Relacionados: [arquitetura](ARQUITETURA_DADOS.md), [decisões](REGISTRO_DE_DECISOES.md), [roadmap](ROADMAP.md).
