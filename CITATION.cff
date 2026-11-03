@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "Ao citar o planejamento do IDOSC-GP, identifique a versão documental e o commit consultado."
+title: "IDOSC-GP: documentação inicial do projeto de índice de desempenho de OSCs na gestão de parcerias públicas"
+authors:
+  - family-names: "Rolim Neto"
+    given-names: "Raimundo de Moura"
+version: "0.1.0"
+date-released: "2026-11-02"
+url: "https://github.com/RaimundoMRNeto/idosc-gp"
+repository-code: "https://github.com/RaimundoMRNeto/idosc-gp"
+abstract: >-
+  Planejamento de pesquisa aplicada em Ciência de Dados para integração de fontes
+  públicas e construção de um índice experimental de desempenho administrativo
+  de OSCs em parcerias federais. Esta edição contém documentação e protocolos
+  propostos; não inclui base consolidada, índice calculado ou modelos treinados.
+keywords:
+  - "organizações da sociedade civil"
+  - "parcerias públicas"
+  - "indicadores compostos"
+  - "dados abertos"
+  - "validação temporal"
